@@ -1,0 +1,8 @@
+# TODO We must insert template-init into the env.
+# - That means that tinit must be somewhere published.
+# - I'll probably rename tinit to agent.
+# - Once each environment is a separate VM the agent will run directly on the VM.
+
+FROM devbook/env
+# ...
+
