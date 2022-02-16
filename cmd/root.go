@@ -13,16 +13,10 @@ var cfgFile string
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "devbookctl",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "The Devbook CLI",
+	Long: `devbookctl is a command line interface to the usedevbook.com platform.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+It allows Devbook users to create and push custom VM environments.`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
