@@ -1,0 +1,8 @@
+id = "example-env"
+
+files_dir = "files"
+
+root_dir = "/home/runner"
+
+setup_cmd = "echo 'setup'"
+start_cmd = "echo 'start'"
