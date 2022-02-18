@@ -4,23 +4,23 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/devbookhq/devbookctl/cmd/utils"
+	"github.com/devbookhq/devbookctl/cmd/err"
 	docker "github.com/fsouza/go-dockerclient"
 )
 
-func PushEnv(client *docker.Client, conf *EnvConfig) {
+func PushEnv(client *docker.Client, conf *EnvConfig, imageName string) {
 
 	var buf bytes.Buffer
 
 	opts := docker.PushImageOptions{
-		Name:         registryPath + conf.Id,
+		Name:         imageName,
 		OutputStream: &buf,
 	}
 
 	auth := docker.AuthConfiguration{}
 
-	err := client.PushImage(opts, auth)
-	utils.Check(err)
+	pushErr := client.PushImage(opts, auth)
+	err.Check(pushErr)
 
 	fmt.Println(buf)
 }

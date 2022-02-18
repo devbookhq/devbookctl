@@ -1,13 +1,14 @@
 package cmd
 
 import (
-	"path/filepath"
 	"os"
+	"path/filepath"
+
 	docker "github.com/fsouza/go-dockerclient"
 	"github.com/spf13/cobra"
 
 	"github.com/devbookhq/devbookctl/cmd/env"
-	"github.com/devbookhq/devbookctl/cmd/utils"
+	"github.com/devbookhq/devbookctl/cmd/err"
 )
 
 // pushCmd represents the push command
@@ -16,16 +17,16 @@ var pushCmd = &cobra.Command{
 	Short: "Build and push a VM environment",
 	Run: func(cmd *cobra.Command, args []string) {
 		dir, dirErr := os.Getwd()
-		utils.Check(dirErr)
+		err.Check(dirErr)
 
-		confPath:= filepath.Join(dir, "dbk.toml")
+		confPath := filepath.Join(dir, "dbk.toml")
 		conf := env.ParseConfig(confPath)
 
 		client, dockerErr := docker.NewClientFromEnv()
-		utils.Check(dockerErr)
+		err.Check(dockerErr)
 
-		env.BuildEnv(client, &conf)
-		env.PushEnv(client, &conf)
+		imageName := env.BuildEnv(client, &conf)
+		env.PushEnv(client, &conf, imageName)
 	},
 }
 
