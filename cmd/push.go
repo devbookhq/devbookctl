@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -21,50 +22,44 @@ var pushCmd = &cobra.Command{
 
 		dir, err := os.Getwd()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "\nError determining current working dir: %v\n", err)
-			return
+			log.Fatalln("\nError determining current working dir:", err)
 		}
 
-		fmt.Fprintf(os.Stdout, "Parsing config...")
+		fmt.Print("Parsing config...")
 		confPath := filepath.Join(dir, "dbk.toml")
 		conf, err := env.ParseConfig(confPath)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "\nError parsing config: %v\n", err)
-			return
+			log.Fatalln("\nError parsing config:", err)
 		}
-		fmt.Fprintf(os.Stdout, "done\n")
+		fmt.Println("done")
 
-		fmt.Fprintf(os.Stdout, "Initializing Docker...")
+		fmt.Print("Initializing Docker...")
 		client, err := docker.NewClientFromEnv()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "\nError initializing Docker client: %v\n", err)
-			return
+			log.Fatalln("\nError initializing Docker client:", err)
 		}
-		fmt.Fprintf(os.Stdout, "done\n")
+		fmt.Println("done")
 
-		fmt.Fprintf(os.Stdout, "Updating Devbook base image...")
+		fmt.Print("Updating Devbook base image...")
 		err = env.PullBaseEnv(ctx, client)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "\nError pulling base env: %v\n", err)
-			return
+			log.Fatalln("\nError pulling base env:", err)
 		}
-		fmt.Fprintf(os.Stdout, "done\n")
+		fmt.Println("done")
 		
-		fmt.Fprintf(os.Stdout, "Building custom Devbook env...")
-		imageName, err := env.BuildEnv(ctx, client, &conf, dir)
+		fmt.Print("Building custom Devbook env...")
+		imageName, err := env.BuildEnv(ctx, client, conf, dir)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "\nError building custom env: %v\n", err)
-			return
+			log.Fatalln("\nError building custom env:", err)
 		}
-		fmt.Fprintf(os.Stdout, "done\n")
+		fmt.Println("done")
 
-		fmt.Fprintf(os.Stdout, "Pushing custom Devbook env...")
-		err = env.PushEnv(ctx, client, &conf, imageName)
+		fmt.Print("Pushing custom Devbook env...")
+		err = env.PushEnv(ctx, client, conf, imageName)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "\nError pushing custom env: %v\n", err)
-			return
+			log.Fatalln("\nError pushing custom env:", err)
 		}
-		fmt.Fprintf(os.Stdout, "done\n")
+		fmt.Println("done")
 	},
 }
 
