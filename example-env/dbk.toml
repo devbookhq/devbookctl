@@ -1,4 +1,4 @@
 id = "example-env"
 
 root_dir = "/home/runner"
-start_cmd = "echo 'start'"
+start_cmd = "echo start"

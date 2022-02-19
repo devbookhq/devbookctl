@@ -17,7 +17,7 @@ ENV root_dir="/home/runner"
 ENV start_cmd=";"
 
 # Unix socket for communication with Runner.
-# Use by the `tinit` process.
+# Used by the `tinit` process.
 ENV runner_socket_path="/home/runner.socket"
 # Go to the directory with setup files and execute the setup command - for examply installing dependencies, etc.
 
