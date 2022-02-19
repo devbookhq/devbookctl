@@ -6,7 +6,6 @@ COPY template-init /template-init
 WORKDIR /template-init
 RUN go mod download
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /tinit .
-#RUN go build -o /tinit .
 # ---- tinit build phase END
 
 # We need to base this image on the CUSTOMER custom image, so the ENV/ARG vars are defined and the tinit is executed as expected.
@@ -14,16 +13,13 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /tinit .
 # Check what happens with envs/args from the original image.
 FROM ubuntu:18.04
 
-ARG root_dir
-ARG start_cmd
-ENV root_dir=${root_dir}
-ENV start_cmd=${start_cmd}
+ENV root_dir="/home/runner"
+ENV start_cmd=";"
 
 # Unix socket for communication with Runner.
 # Use by the `tinit` process.
 ENV runner_socket_path="/home/runner.socket"
 # Go to the directory with setup files and execute the setup command - for examply installing dependencies, etc.
-WORKDIR ${root_dir}
 
 # Copy the startup script and set it to execute on container start.
 COPY --from=build_go /tinit /usr/bin/tinit

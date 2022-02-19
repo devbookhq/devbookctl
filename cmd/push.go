@@ -1,14 +1,15 @@
 package cmd
 
 import (
+	"context"
+	"fmt"
 	"os"
 	"path/filepath"
 
 	docker "github.com/fsouza/go-dockerclient"
 	"github.com/spf13/cobra"
 
-	"github.com/devbookhq/devbookctl/cmd/env"
-	"github.com/devbookhq/devbookctl/cmd/err"
+	"github.com/devbookhq/devbookctl/internal/env"
 )
 
 // pushCmd represents the push command
@@ -16,17 +17,54 @@ var pushCmd = &cobra.Command{
 	Use:   "push",
 	Short: "Build and push a VM environment",
 	Run: func(cmd *cobra.Command, args []string) {
-		dir, dirErr := os.Getwd()
-		err.Check(dirErr)
+		ctx := context.Background()
 
+		dir, err := os.Getwd()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "\nError determining current working dir: %v\n", err)
+			return
+		}
+
+		fmt.Fprintf(os.Stdout, "Parsing config...")
 		confPath := filepath.Join(dir, "dbk.toml")
-		conf := env.ParseConfig(confPath)
+		conf, err := env.ParseConfig(confPath)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "\nError parsing config: %v\n", err)
+			return
+		}
+		fmt.Fprintf(os.Stdout, "done\n")
 
-		client, dockerErr := docker.NewClientFromEnv()
-		err.Check(dockerErr)
+		fmt.Fprintf(os.Stdout, "Initializing Docker...")
+		client, err := docker.NewClientFromEnv()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "\nError initializing Docker client: %v\n", err)
+			return
+		}
+		fmt.Fprintf(os.Stdout, "done\n")
 
-		imageName := env.BuildEnv(client, &conf)
-		env.PushEnv(client, &conf, imageName)
+		fmt.Fprintf(os.Stdout, "Updating Devbook base image...")
+		err = env.PullBaseEnv(ctx, client)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "\nError pulling base env: %v\n", err)
+			return
+		}
+		fmt.Fprintf(os.Stdout, "done\n")
+		
+		fmt.Fprintf(os.Stdout, "Building custom Devbook env...")
+		imageName, err := env.BuildEnv(ctx, client, &conf, dir)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "\nError building custom env: %v\n", err)
+			return
+		}
+		fmt.Fprintf(os.Stdout, "done\n")
+
+		fmt.Fprintf(os.Stdout, "Pushing custom Devbook env...")
+		err = env.PushEnv(ctx, client, &conf, imageName)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "\nError pushing custom env: %v\n", err)
+			return
+		}
+		fmt.Fprintf(os.Stdout, "done\n")
 	},
 }
 
