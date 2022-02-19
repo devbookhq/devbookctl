@@ -16,7 +16,7 @@ import (
 // pushCmd represents the push command
 var pushCmd = &cobra.Command{
 	Use:   "push",
-	Short: "Build and push a VM environment",
+	Short: "Build and push custom environment for Devbook VM",
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := context.Background()
 
