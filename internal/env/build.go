@@ -56,6 +56,7 @@ func BuildEnv(ctx context.Context, client *docker.Client, conf *EnvConfig, dir s
 		Name:         imageNameWithoutEnvs,
 		OutputStream: outputbuf,
 		Context:      ctx,
+		Dockerfile:   "Dockerfile.dbk",
 		ContextDir:   dir,
 	}); err != nil {
 		return "", fmt.Errorf("cannot build custom env Docker image: %v", err)
