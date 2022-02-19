@@ -11,7 +11,7 @@ import (
 	docker "github.com/fsouza/go-dockerclient"
 )
 
-var envVarsDockerfile = `
+const envVarsDockerfile = `
 FROM "{{.BaseImage}}"
 
 ENV root_dir="{{.RootDir}}"
@@ -34,12 +34,11 @@ func getEnvVarsDockerfile(baseImage string, conf *EnvConfig) (string, error) {
 
 	buf := new(bytes.Buffer)
 
-	err = tmpl.Execute(buf, EnvVars{
+	if err = tmpl.Execute(buf, EnvVars{
 		BaseImage: baseImage,
 		StartCmd:  conf.StartCmd,
 		RootDir:   conf.RootDir,
-	})
-	if err != nil {
+	}); err != nil {
 		return "", fmt.Errorf("cannot customize internal Dockerfile: %v", err)
 	}
 
@@ -53,16 +52,12 @@ func BuildEnv(ctx context.Context, client *docker.Client, conf *EnvConfig, dir s
 	imageNameWithoutEnvs := imageName + ":no-envs"
 
 	// Build user's env based on a devbook image
-	err := client.BuildImage(docker.BuildImageOptions{
+	if err := client.BuildImage(docker.BuildImageOptions{
 		Name:         imageNameWithoutEnvs,
 		OutputStream: outputbuf,
 		Context:      ctx,
 		ContextDir:   dir,
-	})
-
-	// fmt.Println(outputbuf)
-
-	if err != nil {
+	}); err != nil {
 		return "", fmt.Errorf("cannot build custom env Docker image: %v", err)
 	}
 
@@ -84,16 +79,12 @@ func BuildEnv(ctx context.Context, client *docker.Client, conf *EnvConfig, dir s
 	tr.Close()
 
 	// Build image based on the user's image, injecting Docker env vars so the tinit can access them.
-	err = client.BuildImage(docker.BuildImageOptions{
+	if err = client.BuildImage(docker.BuildImageOptions{
 		Name:         imageName,
 		OutputStream: outputbuf,
 		InputStream:  inputbuf,
 		Context:      ctx,
-	})
-
-	// fmt.Println(outputbuf)
-
-	if err != nil {
+	}); err != nil {
 		return "", fmt.Errorf("cannot inject env vars to custom env Docker image: %v", err)
 	}
 

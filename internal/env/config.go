@@ -14,11 +14,13 @@ type EnvConfig struct {
 	StartCmd string `toml:"start_cmd"`
 }
 
-var registryServer = "us-central1-docker.pkg.dev"
-var registryPath = registryServer + "/devbookhq/devbook-runner-templates"
-var baseImageName = "base"
-var baseImagePath = registryPath + "/" + baseImageName
-var baseImageAlias = "devbook"
+const (
+	registryServer = "us-central1-docker.pkg.dev"
+	registryPath   = registryServer + "/devbookhq/devbook-runner-templates"
+	baseImageName  = "base"
+	baseImagePath  = registryPath + "/" + baseImageName
+	baseImageAlias = "devbook"
+)
 
 func ParseConfig(confPath string) (*EnvConfig, error) {
 	data, err := os.ReadFile(confPath)
@@ -27,8 +29,7 @@ func ParseConfig(confPath string) (*EnvConfig, error) {
 	}
 
 	var conf EnvConfig
-	_, err = toml.Decode(string(data), &conf)
-	if err != nil {
+	if _, err = toml.Decode(string(data), &conf); err != nil {
 		return nil, fmt.Errorf("cannot decode config content: %v", err)
 	}
 

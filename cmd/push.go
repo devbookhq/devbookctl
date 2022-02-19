@@ -22,7 +22,7 @@ var pushCmd = &cobra.Command{
 
 		dir, err := os.Getwd()
 		if err != nil {
-			log.Fatalln("\nError determining current working dir:", err)
+			log.Fatalln("Error determining current working dir:", err)
 		}
 
 		fmt.Print("Parsing config...")
@@ -41,12 +41,11 @@ var pushCmd = &cobra.Command{
 		fmt.Println("done")
 
 		fmt.Print("Updating Devbook base image...")
-		err = env.PullBaseEnv(ctx, client)
-		if err != nil {
+		if err = env.PullBaseEnv(ctx, client); err != nil {
 			log.Fatalln("\nError pulling base env:", err)
 		}
 		fmt.Println("done")
-		
+
 		fmt.Print("Building custom Devbook env...")
 		imageName, err := env.BuildEnv(ctx, client, conf, dir)
 		if err != nil {
@@ -55,8 +54,7 @@ var pushCmd = &cobra.Command{
 		fmt.Println("done")
 
 		fmt.Print("Pushing custom Devbook env...")
-		err = env.PushEnv(ctx, client, conf, imageName)
-		if err != nil {
+		if err = env.PushEnv(ctx, client, conf, imageName); err != nil {
 			log.Fatalln("\nError pushing custom env:", err)
 		}
 		fmt.Println("done")

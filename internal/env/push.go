@@ -11,7 +11,7 @@ import (
 func PushEnv(ctx context.Context, client *docker.Client, conf *EnvConfig, imageName string) error {
 	outputbuf := bytes.NewBuffer(nil)
 
-	err := client.PushImage(docker.PushImageOptions{
+	if err := client.PushImage(docker.PushImageOptions{
 		Name:         imageName,
 		OutputStream: outputbuf,
 		Tag:          "latest",
@@ -20,11 +20,7 @@ func PushEnv(ctx context.Context, client *docker.Client, conf *EnvConfig, imageN
 		// Docker push requires that the `X-Registry-Auth` header is present - it can be even an empty string.
 		RegistryToken: "",
 		ServerAddress: registryServer,
-	})
-
-	// fmt.Println(outputbuf)
-
-	if err != nil {
+	}); err != nil {
 		return fmt.Errorf("cannot push custom env Docker image: %v", err)
 	}
 
