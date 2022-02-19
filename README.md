@@ -37,7 +37,7 @@ The Dockerfile describing the VM's environment.
 
 The `Dockerfile.dbk` must start with `FROM devbook` declaration. This makes sure you use the base Docker image compatible with the Devbook VM.
 
-```docker
+```dockerfile
 # Use the Devbook base image.
 FROM devbook
 
