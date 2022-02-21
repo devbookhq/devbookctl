@@ -14,7 +14,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /tinit .
 FROM ubuntu:18.04
 
 ENV root_dir="/"
-ENV start_cmd=";"
+ENV start_cmd="true"
 
 # Unix socket for communication with Runner.
 # Used by the `tinit` process.

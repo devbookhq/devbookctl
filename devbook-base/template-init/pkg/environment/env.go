@@ -28,9 +28,12 @@ func New() (*Environment, error) {
 	if env.ROOT_DIR == "" {
 		return nil, fmt.Errorf("cannot create template, env 'root_dir' is empty")
 	}
-
 	env.CODE_CELLS_DIR = env.ROOT_DIR
+
 	env.START_CMD = os.Getenv("start_cmd")
+	if env.START_CMD == "" {
+		return nil, fmt.Errorf("cannot create template, env 'start_cmd' is empty")
+	}
 
 	return env, nil
 }

@@ -27,7 +27,10 @@ func ParseConfig(confPath string) (*EnvConfig, error) {
 		return nil, fmt.Errorf("cannot read config file: %v", err)
 	}
 
-	var conf EnvConfig
+	// Add config defaults
+	conf := EnvConfig{
+		StartCmd: "true",
+	}
 	if _, err = toml.Decode(string(data), &conf); err != nil {
 		return nil, fmt.Errorf("cannot decode config file content: %v", err)
 	}
