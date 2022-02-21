@@ -13,7 +13,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /tinit .
 # Check what happens with envs/args from the original image.
 FROM ubuntu:18.04
 
-ENV root_dir="/home/runner"
+ENV root_dir="/"
 ENV start_cmd=";"
 
 # Unix socket for communication with Runner.

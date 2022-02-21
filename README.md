@@ -58,8 +58,6 @@ The [TOML](https://toml.io/en/) configuration file. The minimal configuration fi
 # Required. Unique ID for your Devbook VM. It must contain only lowercase letters, numbers or dash "-" and it must start with a letter.
 id = "example-env"
 
-root_dir = "/home"
-
 # Optional. A command that will get executed when the VM boots up.
 # You can put your custom scripts here, for example.
 start_cmd = "echo Hello World"

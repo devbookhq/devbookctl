@@ -10,7 +10,6 @@ import (
 
 type EnvConfig struct {
 	ID       string `toml:"id"`
-	RootDir  string `toml:"root_dir"`
 	StartCmd string `toml:"start_cmd"`
 }
 

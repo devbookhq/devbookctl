@@ -14,14 +14,10 @@ import (
 const envVarsDockerfile = `
 FROM "{{.BaseImage}}"
 
-ENV root_dir="{{.RootDir}}"
 ENV start_cmd="{{.StartCmd}}"
-
-WORKDIR "{{.RootDir}}"
 `
 
 type EnvVars struct {
-	RootDir   string
 	StartCmd  string
 	BaseImage string
 }
@@ -37,7 +33,6 @@ func getEnvVarsDockerfile(baseImage string, conf *EnvConfig) (string, error) {
 	if err = tmpl.Execute(buf, EnvVars{
 		BaseImage: baseImage,
 		StartCmd:  conf.StartCmd,
-		RootDir:   conf.RootDir,
 	}); err != nil {
 		return "", fmt.Errorf("cannot customize internal Dockerfile: %v", err)
 	}
