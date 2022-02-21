@@ -83,7 +83,5 @@ const { runCmd, stdout, stderr } = useDevbook({ env: 'example-env' })
 ```ts
 import { Devbook } from '@devbookhq/sdk'
 
-const dbk = new Devbook({
-  env: 'example-env',
-})
+const dbk = new Devbook({ env: 'example-env' })
 ```
