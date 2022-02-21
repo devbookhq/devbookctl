@@ -8,7 +8,12 @@ os=$(uname -s)
 arch=$(uname -m)
 version=${1:-latest}
 
-devbookctl_uri=$(curl -s https://github.com/devbookhq/devbookctl/releases/$version/download/devbookctl_${os}_${arch})
+    #"https://github.com/devbookhq/devbookctl/releases/latest/download/devbookctl_Darwin_arm64"
+    #"https://github.com/devbookhq/devbookctl/releases/latest/download/devbookctl_Darwin_x86_64"
+devbookctl_uri="https://github.com/devbookhq/devbookctl/releases/$version/download/devbookctl_${os}_${arch}"
+#echo $url
+#devbookctl_uri=$(curl -s $url)
+#echo $devbookctl_uri
 # TODO
 #flyctl_uri=$(curl -s https://api.fly.io/app/flyctl_releases/$os/$arch/$version)
 
@@ -48,6 +53,7 @@ if command -v devbookctl >/dev/null; then
 else
 	case $SHELL in
 	/bin/zsh) shell_profile=".zshrc" ;;
+  /bin/fish) shell_profile=".config/fish/config.fish" ;;
 	*) shell_profile=".bash_profile" ;;
 	esac
 	echo "Manually add the directory to your \$HOME/$shell_profile (or similar)"

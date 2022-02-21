@@ -29,7 +29,7 @@ archives:
     wrap_in_directory: false
     format: tar.gz
 
-  - id: binary
+  - id: latest
     replacements:
       darwin: Darwin
       linux: Linux
@@ -37,8 +37,9 @@ archives:
     builds:
       - default
     wrap_in_directory: false
-    format: binary
-    name_template: "{{ .Binary }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}"
+    format: tag.gz
+    #name_template: "{{ .Binary }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}"
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}"
 
 checksum:
   name_template: 'checksums.txt'
