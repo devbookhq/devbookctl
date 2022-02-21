@@ -42,7 +42,7 @@ var pushCmd = &cobra.Command{
 			log.Fatalf("\nError with Dockerfile.dbk\n> file %v is missing", dockerfilePath)
 		}
 
-		fmt.Printf("\nBuilding and pushing **%v**\n", conf.ID)
+		fmt.Printf("\nBuilding and pushing env with ID: \"%v\"\n", conf.ID)
 
 		fmt.Print("- Initializing Docker ")
 		client, err := docker.NewClientFromEnv()
