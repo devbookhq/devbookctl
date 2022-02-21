@@ -49,6 +49,7 @@ var pushCmd = &cobra.Command{
 		if err != nil {
 			log.Fatalf("\n\nError initializing Docker\n> %s\n", err)
 		}
+
 		fmt.Println("(done)")
 
 		fmt.Print("- Updating Devbook base image ")
@@ -64,7 +65,7 @@ var pushCmd = &cobra.Command{
 		}
 		fmt.Println("")
 
-		fmt.Printf("- Pushing custom Devbook env \"%s\"\n", conf.ID)
+		fmt.Printf("- Pushing custom Devbook env \"%s\"", conf.ID)
 		if err = env.PushEnv(ctx, client, conf, imageName); err != nil {
 			log.Fatalf("\n\nError pushing custom env\n> %s\n", err)
 		}
