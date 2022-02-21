@@ -42,7 +42,7 @@ var pushCmd = &cobra.Command{
 			log.Fatalf("\nError with Dockerfile.dbk\n> file %v is missing", dockerfilePath)
 		}
 
-		fmt.Printf("\nBuilding and pushing env with ID: \"%v\"\n", conf.ID)
+		fmt.Printf("Building and pushing env with ID: \"%s\"\n", conf.ID)
 
 		fmt.Print("- Initializing Docker ")
 		client, err := docker.NewClientFromEnv()
@@ -57,19 +57,19 @@ var pushCmd = &cobra.Command{
 		}
 		fmt.Println("(done)")
 
-		fmt.Print("- Building custom Devbook env ")
+		fmt.Printf("- Building custom Devbook env \"%s\"\n", conf.ID)
 		imageName, err := env.BuildEnv(ctx, client, conf, dir, dockerfileName)
 		if err != nil {
 			log.Fatalf("\n\nError building custom env\n> %v\n", err)
 		}
 		fmt.Println("(done)")
 
-		fmt.Print("- Pushing custom Devbook env ")
+		fmt.Printf(`- Pushing custom Devbook env "%s"\n`, conf.ID)
 		if err = env.PushEnv(ctx, client, conf, imageName); err != nil {
 			log.Fatalf("\n\nError pushing custom env\n> %v\n", err)
 		}
 		fmt.Println("(done)")
-		fmt.Printf("\nPushed custom env with id **%v**\n", conf.ID)
+		fmt.Printf("\nPushed custom env with id \"%s\"\n", conf.ID)
 	},
 }
 
