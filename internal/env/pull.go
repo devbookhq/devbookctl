@@ -1,7 +1,6 @@
 package env
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 
@@ -9,13 +8,10 @@ import (
 )
 
 func PullBaseEnv(ctx context.Context, client *docker.Client) error {
-	outputbuf := bytes.NewBuffer(nil)
-
 	// Pull base image path from registry
 	if err := client.PullImage(docker.PullImageOptions{
-		Repository:   baseImagePath,
-		Context:      ctx,
-		OutputStream: outputbuf,
+		Repository: baseImagePath,
+		Context:    ctx,
 	}, docker.AuthConfiguration{}); err != nil {
 		return fmt.Errorf("cannot pull Devbook base Docker image: %v", err)
 	}

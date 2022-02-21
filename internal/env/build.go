@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"os"
 	"text/template"
 	"time"
 
@@ -40,7 +41,7 @@ func getEnvVarsDockerfile(baseImage string, conf *EnvConfig) (string, error) {
 	return buf.String(), nil
 }
 
-func BuildEnv(ctx context.Context, client *docker.Client, conf *EnvConfig, dir string, dockerfileName string) (string, error) {
+func BuildEnv(ctx context.Context, client *docker.Client, conf *EnvConfig, dir, dockerfileName string) (string, error) {
 	outputbuf := bytes.NewBuffer(nil)
 
 	imageName := registryPath + "/" + conf.ID
@@ -49,15 +50,13 @@ func BuildEnv(ctx context.Context, client *docker.Client, conf *EnvConfig, dir s
 	// Build user's env based on a devbook image
 	if err := client.BuildImage(docker.BuildImageOptions{
 		Name:         imageNameWithoutEnvs,
-		OutputStream: outputbuf,
+		OutputStream: os.Stdout,
 		Context:      ctx,
 		Dockerfile:   dockerfileName,
 		ContextDir:   dir,
 	}); err != nil {
 		return "", fmt.Errorf("cannot build custom env Docker image: %v", err)
 	}
-
-	outputbuf.Reset()
 
 	dockerfile, err := getEnvVarsDockerfile(imageNameWithoutEnvs, conf)
 	if err != nil {
@@ -77,8 +76,8 @@ func BuildEnv(ctx context.Context, client *docker.Client, conf *EnvConfig, dir s
 	// Build image based on the user's image, injecting Docker env vars so the tinit can access them.
 	if err = client.BuildImage(docker.BuildImageOptions{
 		Name:         imageName,
-		OutputStream: outputbuf,
 		InputStream:  inputbuf,
+		OutputStream: outputbuf,
 		Context:      ctx,
 	}); err != nil {
 		return "", fmt.Errorf("cannot inject env vars to custom env Docker image: %v", err)
