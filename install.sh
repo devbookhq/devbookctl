@@ -3,104 +3,18 @@
 # Based on Deno installer: Copyright 2019 the Deno authors. All rights reserved. MIT license.
 # TODO(everyone): Keep this script simple and easily auditable.
 
+set -e
+
 os=$(uname -s)
 arch=$(uname -m)
 #version=${1:-latest}
+dbk_uri="https://github.com/devbookhq/devbookctl/releases/latest/download/dbk_${os}_${arch}.tar.gz"
 
-# Literally with quotes: "v[number].[number].[number]"
-# This makes sure we ignore pre-releases that are in the format "v[number].[number].[number]-pre-[number]"
-releases_regexp='\"v\([0-9]*\)[.]\([0-9]*\)[.]\([0-9]*\)\"'
-
-# semverParseInto and semverLT from https://github.com/cloudflare/semver_bash/blob/master/semver.sh
-# usage: semverParseInto version major minor patch special
-# version: the string version
-# major, minor, patch, special: will be assigned by the function
-semverParseInto() {
-    local RE='[^0-9]*\([0-9]*\)[.]\([0-9]*\)[.]\([0-9]*\)\([0-9A-Za-z-]*\)'
-    #MAJOR
-    eval $2=`echo $1 | sed -e "s#$RE#\1#"`
-    #MINOR
-    eval $3=`echo $1 | sed -e "s#$RE#\2#"`
-    #MINOR
-    eval $4=`echo $1 | sed -e "s#$RE#\3#"`
-    #SPECIAL
-    eval $5=`echo $1 | sed -e "s#$RE#\4#"`
-}
-
-# usage: semverLT version1 version2
-semverLT() {
-    local MAJOR_A=0
-    local MINOR_A=0
-    local PATCH_A=0
-    local SPECIAL_A=0
-
-    local MAJOR_B=0
-    local MINOR_B=0
-    local PATCH_B=0
-    local SPECIAL_B=0
-
-    semverParseInto $1 MAJOR_A MINOR_A PATCH_A SPECIAL_A
-    semverParseInto $2 MAJOR_B MINOR_B PATCH_B SPECIAL_B
-
-    if [ $MAJOR_A -lt $MAJOR_B ]; then
-        return 0
-    fi
-    if [ $MAJOR_A -le $MAJOR_B ] && [ $MINOR_A -lt $MINOR_B ]; then
-        return 0
-    fi
-    if [ $MAJOR_A -le $MAJOR_B ] && [ $MINOR_A -le $MINOR_B ] && [ $PATCH_A -lt $PATCH_B ]; then
-        return 0
-    fi
-    if [ "_$SPECIAL_A"  == "_" ] && [ "_$SPECIAL_B"  == "_" ] ; then
-        return 1
-    fi
-    if [ "_$SPECIAL_A"  == "_" ] && [ "_$SPECIAL_B"  != "_" ] ; then
-        return 1
-    fi
-    if [ "_$SPECIAL_A"  != "_" ] && [ "_$SPECIAL_B"  == "_" ] ; then
-        return 0
-    fi
-    if [ "_$SPECIAL_A" < "_$SPECIAL_B" ]; then
-        return 0
-    fi
-
-    return 1
-}
-
-# Get all tag releases.
-# Grep edits:
-# "name": "v0.0.1",
-# name: v0.0.1,
-# name: v0.0.1
-# 0.0.1
-tags=$(curl -s https://api.github.com/repos/devbookhq/devbookctl/tags \
-  | grep "$releases_regexp" \
-  | grep 'name' \
-  | tr -d '"' \
-  | tr -d ',' \
-  | cut -d 'v' -f2)
-
-# Sort the tags
-latest=""
-for tag in $tags; do
-  if [ "$latest" = "" ]; then
-    latest="$tag"
-  else
-    semverLT $tag $latest
-    if [ $? -eq 1 ]; then
-      latest="$tag"
-    fi
-  fi
-done
-
-if [ ! "$latest" ]; then
-  echo "No releases found"
-  exit 1
+if [ ! "$dbk_uri" ]; then
+  # TODO
+	echo "Error: Unable to find a devbookctl release for $os/$arch/$version - see github.com/devbookhq/devbookctl/releases for all versions" 1>&2
+	exit 1
 fi
-
-set -e
-
-dbk_uri="https://github.com/devbookhq/devbookctl/releases/download/v$latest/dbk_${os}_${arch}.tar.gz"
 
 #dbk_install="${DBK_INSTALL:-$HOME/.dbk}"
 dbk_install="/usr/local"
@@ -142,5 +56,3 @@ else
 	echo "  export PATH=\"\$DBK_INSTALL/bin:\$PATH\""
 	echo "Run '$exe --help' to get started"
 fi
-
-
