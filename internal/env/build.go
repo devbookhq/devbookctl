@@ -45,7 +45,7 @@ func BuildEnv(ctx context.Context, client *docker.Client, conf *EnvConfig, dir, 
 	outputbuf := bytes.NewBuffer(nil)
 
 	imageName := registryPath + "/" + conf.ID
-	imageNameWithoutEnvs := imageName + ":no-envs"
+	imageNameWithoutEnvs := imageName + ":dbk-internal"
 
 	// Build user's env based on a devbook image
 	if err := client.BuildImage(docker.BuildImageOptions{

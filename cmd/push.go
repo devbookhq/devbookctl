@@ -65,11 +65,10 @@ var pushCmd = &cobra.Command{
 		}
 		fmt.Println("")
 
-		fmt.Printf("- Pushing custom Devbook env \"%s\"", conf.ID)
+		fmt.Printf("- Pushing custom Devbook env \"%s\"\n\n", conf.ID)
 		if err = env.PushEnv(ctx, client, conf, imageName); err != nil {
 			log.Fatalf("\n\nError pushing custom env\n> %s\n", err)
 		}
-		fmt.Println("(done)")
 		fmt.Printf("\nCreated and pushed custom env with id \"%s\"\n", conf.ID)
 	},
 }
