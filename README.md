@@ -5,7 +5,7 @@ It allows you to build and push custom environments for Devbook VMs. You can the
 
 
 ## Installation
-Download `dbk` and install into `usr/local/bin`
+Download `dbk` and install into `/usr/local/bin`
 
 ```sh
 curl -L https://usedevbook.com/install.sh | sh
