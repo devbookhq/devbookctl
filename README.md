@@ -1,11 +1,16 @@
-# devbookctl
-devbookctl is a command-line tool for usedevbook.com
+# `dbk` or `devbookctl`
+`dbk` is a command-line tool for usedevbook.com
 
 
 It allows you to build and push custom environments for Devbook VMs. You can then use VMs with your custom environments via the [Devbook SDK](https://github.com/devbookhq/sdk).
 
+
 ## Installation
-TODO
+Download `dbk` and install into `usr/local/bin`
+
+```sh
+curl -L https://usedevbook.com/install.sh | sh
+```
 
 ## Usage
 
@@ -17,7 +22,7 @@ The `Dockerfile.dbk` describe the VM's environments.
 ```sh
 # 1. Go to a directory containing a Dockerfile describing your custom VM environment.
 
-# 2. Call devbookctl.
+# 2. Call dbk.
 $ devbookctl push
 ```
 

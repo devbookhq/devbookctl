@@ -19,8 +19,8 @@ fi
 devbookctl_install="/usr/local"
 
 bin_dir="$devbookctl_install/bin"
-exe="$bin_dir/devbookctl"
-simexe="$bin_dir/dbk"
+exe="$bin_dir/dbk"
+simexe="$bin_dir/devbookctl"
 
 if [ ! -d "$bin_dir" ]; then
  	mkdir -p "$bin_dir"
