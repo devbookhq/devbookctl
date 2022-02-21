@@ -1,6 +1,11 @@
+# Use the Devbook base image.
 FROM devbook
 
-COPY files files
+# Your custom setup goes here.
+# You can for example copy files, scripts, install packages, binaries, etc.
 
+# E.g.: copy custom files to the `files` dir in the VM.
+COPY files files
+# E.g.: install Python
 RUN apt-get update && apt-get install -y \
   python3-pip
