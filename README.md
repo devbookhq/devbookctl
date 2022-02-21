@@ -1,5 +1,5 @@
 # `dbk`
-`dbk` is a command-line tool for [usedevbook.com](https://www.usedevbook.com/).
+`dbk` is a command-line tool (CLI) for [usedevbook.com](https://www.usedevbook.com/).
 
 It allows you to build and push custom environments for Devbook VMs. You can then use VMs with your custom environments via the [Devbook SDK](https://github.com/devbookhq/sdk).
 
