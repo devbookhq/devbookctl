@@ -3,7 +3,7 @@ env:
   GO_VERSION: 1.17.x
 on:
   push:
-  worflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   release:
