@@ -8,13 +8,13 @@ os=$(uname -s)
 arch=$(uname -m)
 version=${1:-latest}
 
-devbookctl_uri=$(curl -s https://usedevbook.com)
+devbookctl_uri=$(curl -s https://github.com/devbookhq/devbookctl/releases/$version/download/devbookctl_${os}_${arch})
 # TODO
 #flyctl_uri=$(curl -s https://api.fly.io/app/flyctl_releases/$os/$arch/$version)
 
 if [ ! "$devbookctl_uri" ]; then
   # TODO
-	echo "Error: Unable to find a devbookctl release for $os/$arch/$version - see github.com/superfly/flyctl/releases for all versions" 1>&2
+	echo "Error: Unable to find a devbookctl release for $os/$arch/$version - see github.com/devbookhq/devbookctl/releases for all versions" 1>&2
 	exit 1
 fi
 
