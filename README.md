@@ -74,14 +74,14 @@ Most likely, you will be calling [Devbook SDK](https://github.com/devbookhq/sdk)
 Pass the environment's `id` value from the `dbk.toml` config as the `env` parameter when initializing Devbook.
 ### React
 ```tsx
-import { useDevbook } from '@devbookhq/sdk`
+import { useDevbook } from '@devbookhq/sdk'
 
 const { runCmd, stdout, stderr } = useDevbook({ env: 'example-env' })
 ```
 
 ### JavaScript/TypeScript
 ```ts
-import { Devbook } from '@devbookhq/sdk`
+import { Devbook } from '@devbookhq/sdk'
 
 const dbk = new Devbook({
   env: 'example-env`,
