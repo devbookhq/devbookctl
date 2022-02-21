@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -13,64 +14,65 @@ import (
 	"github.com/devbookhq/devbookctl/internal/env"
 )
 
+const (
+	configName     = "dbk.toml"
+	dockerfileName = "Dockerfile.dbk"
+)
+
 // pushCmd represents the push command
 var pushCmd = &cobra.Command{
 	Use:   "push",
-	Short: "Build and push custom environment for Devbook VM",
+	Short: "Build and push a custom environment for Devbook VM",
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := context.Background()
 
 		dir, err := os.Getwd()
 		if err != nil {
-			log.Fatalln("Error determining current working dir:", err)
+			log.Fatalf("Error determining current working dir\n> %v\n", err)
 		}
 
-		fmt.Print("Parsing config...")
-		confPath := filepath.Join(dir, "dbk.toml")
+		confPath := filepath.Join(dir, configName)
 		conf, err := env.ParseConfig(confPath)
 		if err != nil {
-			log.Fatalln("\nError parsing config:", err)
+			log.Fatalf("\nError with config (dbk.toml)\n> %v\n", err)
 		}
-		fmt.Println("done")
 
-		fmt.Print("Initializing Docker...")
+		dockerfilePath := filepath.Join(dir, dockerfileName)
+		if _, err := os.Stat(dockerfilePath); errors.Is(err, os.ErrNotExist) {
+			log.Fatalf("\nError with Dockerfile.dbk\n> file %v is missing", dockerfilePath)
+		}
+
+		fmt.Printf("\nBuilding and pushing **%v**\n", conf.ID)
+
+		fmt.Print("- Initializing Docker ")
 		client, err := docker.NewClientFromEnv()
 		if err != nil {
-			log.Fatalln("\nError initializing Docker client:", err)
+			log.Fatalf("\n\nError initializing Docker\n> %v\n", err)
 		}
-		fmt.Println("done")
+		fmt.Println("(done)")
 
-		fmt.Print("Updating Devbook base image...")
+		fmt.Print("- Updating Devbook base image ")
 		if err = env.PullBaseEnv(ctx, client); err != nil {
-			log.Fatalln("\nError pulling base env:", err)
+			log.Fatalf("\n\nError updating base image\n> %v\n", err)
 		}
-		fmt.Println("done")
+		fmt.Println("(done)")
 
-		fmt.Print("Building custom Devbook env...")
-		imageName, err := env.BuildEnv(ctx, client, conf, dir)
+		fmt.Print("- Building custom Devbook env ")
+		imageName, err := env.BuildEnv(ctx, client, conf, dir, dockerfileName)
 		if err != nil {
-			log.Fatalln("\nError building custom env:", err)
+			log.Fatalf("\n\nError building custom env\n> %v\n", err)
 		}
-		fmt.Println("done")
+		fmt.Println("(done)")
 
-		fmt.Print("Pushing custom Devbook env...")
+		fmt.Print("- Pushing custom Devbook env ")
 		if err = env.PushEnv(ctx, client, conf, imageName); err != nil {
-			log.Fatalln("\nError pushing custom env:", err)
+			log.Fatalf("\n\nError pushing custom env\n> %v\n", err)
 		}
-		fmt.Println("done")
+		fmt.Println("(done)")
+		fmt.Printf("\nPushed custom env with id **%v**\n", conf.ID)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(pushCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// pushCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// pushCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

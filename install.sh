@@ -7,18 +7,18 @@ set -e
 os=$(uname -s)
 arch=$(uname -m)
 version=${1:-latest}
-devbookctl_uri="https://github.com/devbookhq/devbookctl/releases/$version/download/devbookctl_${os}_${arch}.tar.gz"
+dbk_uri="https://github.com/devbookhq/devbookctl/releases/$version/download/dbk_${os}_${arch}.tar.gz"
 
-if [ ! "$devbookctl_uri" ]; then
+if [ ! "$dbk_uri" ]; then
   # TODO
 	echo "Error: Unable to find a devbookctl release for $os/$arch/$version - see github.com/devbookhq/devbookctl/releases for all versions" 1>&2
 	exit 1
 fi
 
-#devbookctl_install="${DEVBOOKCTL_INSTALL:-$HOME/.dbk}"
-devbookctl_install="/usr/local"
+#dbk_install="${DBK_INSTALL:-$HOME/.dbk}"
+dbk_install="/usr/local"
 
-bin_dir="$devbookctl_install/bin"
+bin_dir="$dbk_install/bin"
 exe="$bin_dir/dbk"
 simexe="$bin_dir/devbookctl"
 
@@ -26,7 +26,7 @@ if [ ! -d "$bin_dir" ]; then
  	mkdir -p "$bin_dir"
 fi
 
-curl --fail --location --progress-bar --output "$exe.tar.gz" "$devbookctl_uri"
+curl --fail --location --progress-bar --output "$exe.tar.gz" "$dbk_uri"
 cd "$bin_dir"
 tar xzf "$exe.tar.gz"
 chmod +x "$exe"
@@ -41,9 +41,9 @@ ln -sf $exe $simexe
 #	"$exe" version -s "shell"
 #fi
 
-echo "devbookctl was installed successfully to $exe"
-if command -v devbookctl >/dev/null; then
-	echo "Run 'devbookctl --help' to get started"
+echo "dbk was installed successfully to $exe"
+if command -v dbk >/dev/null; then
+	echo "Run 'dbk --help' to get started"
 else
 	case $SHELL in
 	/bin/zsh) shell_profile=".zshrc" ;;
@@ -51,7 +51,7 @@ else
 	*) shell_profile=".bash_profile" ;;
 	esac
 	echo "Manually add the directory to your \$HOME/$shell_profile (or similar)"
-	echo "  export DEVBOOKCTL_INSTALL=\"$devbookctl_install\""
-	echo "  export PATH=\"\$DEVBOOKCTL_INSTALL/bin:\$PATH\""
+	echo "  export DBK_INSTALL=\"$dbk_install\""
+	echo "  export PATH=\"\$DBK_INSTALL/bin:\$PATH\""
 	echo "Run '$exe --help' to get started"
 fi

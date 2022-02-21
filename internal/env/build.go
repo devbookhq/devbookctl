@@ -45,7 +45,7 @@ func getEnvVarsDockerfile(baseImage string, conf *EnvConfig) (string, error) {
 	return buf.String(), nil
 }
 
-func BuildEnv(ctx context.Context, client *docker.Client, conf *EnvConfig, dir string) (string, error) {
+func BuildEnv(ctx context.Context, client *docker.Client, conf *EnvConfig, dir string, dockerfileName string) (string, error) {
 	outputbuf := bytes.NewBuffer(nil)
 
 	imageName := registryPath + "/" + conf.ID
@@ -56,7 +56,7 @@ func BuildEnv(ctx context.Context, client *docker.Client, conf *EnvConfig, dir s
 		Name:         imageNameWithoutEnvs,
 		OutputStream: outputbuf,
 		Context:      ctx,
-		Dockerfile:   "Dockerfile.dbk",
+		Dockerfile:   dockerfileName,
 		ContextDir:   dir,
 	}); err != nil {
 		return "", fmt.Errorf("cannot build custom env Docker image: %v", err)

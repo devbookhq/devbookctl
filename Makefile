@@ -1,3 +1,3 @@
 build:
 	@echo Running Build
-	go build -o bin/devbookctl . 
+	go build -o bin/dbk .
