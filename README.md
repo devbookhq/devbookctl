@@ -55,7 +55,7 @@ Note: Don't use the `CMD` or the `ENTRYPOINT` commands in the Dockerfile. See th
 The [TOML](https://toml.io/en/) configuration file. The minimal configuration file contains just the `id` field.
 
 ```toml
-# Required. Unique ID for your Devbook VM.
+# Required. Unique ID for your Devbook VM. It must contain only lowercase letters, numbers or dash "-" and it must start with a letter.
 id = "example-env"
 
 root_dir = "/home"
