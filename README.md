@@ -27,9 +27,9 @@ See [example-env directory](./example-env).
 
 Devbook VM environment is described via two files:
 1. **`Dockerfile.dbk`** <br/>
-A Dockerfile describing the VM's environment. See more [here](#Dockerfile.dbk).
+A Dockerfile describing the VM's environment. See more [here](#Dockerfiledbk).
 2. **`dbk.toml`** <br/>
-A configuration file. See more [here](#dbk.toml).
+A configuration file. See more [here](#dbktoml).
 
 Both files must be present in the same directory from where you're calling the `dbk push` command.
 
