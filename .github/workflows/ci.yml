@@ -22,7 +22,7 @@ jobs:
           version: latest
           args: release --rm-dist
         env:
-          GITHUB_TOKEN: ${{ sectets.GORELEASER_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_TOKEN }}
       - name: Upload checksums as artifact
         uses: actions/upload-artifact@v2
         with:
