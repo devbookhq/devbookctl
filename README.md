@@ -68,9 +68,12 @@ start_cmd = "echo Hello World"
 ### Starting a process once the Devbook VM boots up
 Use `start_cmd` in the `dbk.toml` configuration file to describe what command should be executed as soon as the VM boots up.
 
-## Usage - using a custom environment with the [Devbook SDK](https://github.com/devbookhq/sdk)
-Pass the environment's `id` value from the `dbk.toml` config as the `env` parameter when initializing Devbook.
+## How to spawn Devbook VM with your custom environment with the [Devbook SDK](https://github.com/devbookhq/sdk)
+All the interaction with Devbook VMs is handled via our frontend [Devbook SDK](https://github.com/devbookhq/sdk).
+Following code snippets show how to spawn Devbook VM on our infrastructure with a custom environment that you created via `dbk` beforehand.
+Most likely, you will be calling [Devbook SDK](https://github.com/devbookhq/sdk) from your frontend project such as docs.
 
+Pass the environment's `id` value from the `dbk.toml` config as the `env` parameter when initializing Devbook.
 ### React
 ```tsx
 import { useDevbook } from '@devbookhq/sdk`
