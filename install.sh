@@ -99,7 +99,7 @@ if [ ! "$latest" ]; then
   exit 1
 fi
 
-dbk_uri="https://github.com/devbookhq/devbookctl/releases/$version/download/dbk_${os}_${arch}.tar.gz"
+dbk_uri="https://github.com/devbookhq/devbookctl/releases/download/$latest/dbk_${os}_${arch}.tar.gz"
 
 
 #dbk_install="${DBK_INSTALL:-$HOME/.dbk}"
