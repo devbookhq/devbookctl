@@ -1,0 +1,43 @@
+# This is an example .goreleaser.yml file with some sensible defaults.
+# Make sure to check the documentation at https://goreleaser.com
+before:
+  hooks:
+    # You may remove this if you don't use go modules.
+    - go mod download
+
+builds:
+  - id: default
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+    ignore:
+      - goos: darwin
+        goarch: 386
+      - goos: linux
+        goarch: 386
+
+archives:
+  - id: default
+    replacements:
+      darwin: macOS
+      linux: Linux
+      amd64: x86_64
+    builds:
+      - default
+    wrap_in_directory: false
+    format: tar.gz
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  name_template: "{{.Branch}}-{{.ShortCommit}}"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
