@@ -83,7 +83,6 @@ tags=$(curl -s https://api.github.com/repos/devbookhq/devbookctl/tags \
 # Sort the tags
 latest=""
 for tag in $tags; do
-  echo "t $tag"
   if [ "$latest" = "" ]; then
     latest="$tag"
   else
@@ -99,8 +98,9 @@ if [ ! "$latest" ]; then
   exit 1
 fi
 
-dbk_uri="https://github.com/devbookhq/devbookctl/releases/download/$latest/dbk_${os}_${arch}.tar.gz"
+set -e
 
+dbk_uri="https://github.com/devbookhq/devbookctl/releases/download/v$latest/dbk_${os}_${arch}.tar.gz"
 
 #dbk_install="${DBK_INSTALL:-$HOME/.dbk}"
 dbk_install="/usr/local"
