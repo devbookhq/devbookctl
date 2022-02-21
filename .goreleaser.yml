@@ -29,11 +29,22 @@ archives:
     wrap_in_directory: false
     format: tar.gz
 
+  - id: binary
+    replacements:
+      darwin: macOS
+      linux: Linux
+      amd64: x86_64
+    builds:
+      - default
+    wrap_in_directory: false
+    format: binary
+    name_template: "{{ .Binary }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}"
+
 checksum:
   name_template: 'checksums.txt'
 
 snapshot:
-  name_template: "{{.Branch}}-{{.ShortCommit}}"
+  name_template: "{{ .Branch }}-{{ .ShortCommit }}"
 
 changelog:
   sort: asc
