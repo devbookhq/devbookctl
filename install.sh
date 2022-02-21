@@ -7,15 +7,7 @@ set -e
 os=$(uname -s)
 arch=$(uname -m)
 version=${1:-latest}
-
-    #"https://github.com/devbookhq/devbookctl/releases/latest/download/devbookctl_Darwin_arm64"
-    #"https://github.com/devbookhq/devbookctl/releases/latest/download/devbookctl_Darwin_x86_64"
-devbookctl_uri="https://github.com/devbookhq/devbookctl/releases/$version/download/devbookctl_${os}_${arch}"
-#echo $url
-#devbookctl_uri=$(curl -s $url)
-#echo $devbookctl_uri
-# TODO
-#flyctl_uri=$(curl -s https://api.fly.io/app/flyctl_releases/$os/$arch/$version)
+devbookctl_uri="https://github.com/devbookhq/devbookctl/releases/$version/download/devbookctl_${os}_${arch}.tar.gz"
 
 if [ ! "$devbookctl_uri" ]; then
   # TODO
@@ -23,7 +15,8 @@ if [ ! "$devbookctl_uri" ]; then
 	exit 1
 fi
 
-devbookctl_install="${DEVBOOKCTL_INSTALL:-$HOME/.dbk}"
+#devbookctl_install="${DEVBOOKCTL_INSTALL:-$HOME/.dbk}"
+devbookctl_install="/usr/local"
 
 bin_dir="$devbookctl_install/bin"
 exe="$bin_dir/devbookctl"
@@ -41,11 +34,12 @@ rm "$exe.tar.gz"
 
 ln -sf $exe $simexe
 
-if [ "${1}" = "prerel" ] || [ "${1}" = "pre" ]; then
-	"$exe" version -s "shell-prerel"
-else
-	"$exe" version -s "shell"
-fi
+# TODO: We don't support `dbk version` yet.
+#if [ "${2}" = "prerel" ] || [ "${1}" = "pre" ]; then
+#	"$exe" version -s "shell-prerel"
+#else
+#	"$exe" version -s "shell"
+#fi
 
 echo "devbookctl was installed successfully to $exe"
 if command -v devbookctl >/dev/null; then
