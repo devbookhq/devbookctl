@@ -58,7 +58,7 @@ var pushCmd = &cobra.Command{
 		}
 		fmt.Println("(done)")
 
-		fmt.Printf("- Building custom Devbook env \"%s\"\n\n", conf.ID)
+		fmt.Printf("- Building custom Devbook env \"%s\" from Devbook.dbk\n\n", conf.ID)
 		imageName, err := env.BuildEnv(ctx, client, conf, dir, dockerfileName)
 		if err != nil {
 			log.Fatalf("\n\nError building custom env\n> %s\n", err)
@@ -70,7 +70,7 @@ var pushCmd = &cobra.Command{
 			log.Fatalf("\n\nError pushing custom env\n> %s\n", err)
 		}
 		fmt.Println("(done)")
-		fmt.Printf("\nPushed custom env with id \"%s\"\n", conf.ID)
+		fmt.Printf("\nCreated and pushed custom env with id \"%s\"\n", conf.ID)
 	},
 }
 
