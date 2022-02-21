@@ -12,13 +12,13 @@ curl -L https://usedevbook.com/install.sh | sh
 ```
 
 ## Usage - deploying custom environment
-### Push a custom VM environment
+### Create and push custom VM environment
 To build and push a custom environment do the following:
 ```sh
 # 1. Go to a directory containing a Dockerfile.dbk and dbk.toml describing your custom VM environment
 $ cd <environment-directory>
 
-# 2. Call dbk.
+# 2. Call dbk to create and push yout environment
 $ dbk push
 ```
 
