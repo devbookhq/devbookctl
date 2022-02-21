@@ -1,6 +1,6 @@
-# FROM 'us-central1-docker.pkg.dev/devbookhq/devbook-runner-templates/base'
 FROM devbook
 
 COPY files files
 
-# ...
+RUN apt-get update && apt-get install -y \
+  python3-pip

@@ -25,21 +25,21 @@ const (
 func ParseConfig(confPath string) (*EnvConfig, error) {
 	data, err := os.ReadFile(confPath)
 	if err != nil {
-		return nil, fmt.Errorf("cannot read config: %v", err)
+		return nil, fmt.Errorf("cannot read config file: %v", err)
 	}
 
 	var conf EnvConfig
 	if _, err = toml.Decode(string(data), &conf); err != nil {
-		return nil, fmt.Errorf("cannot decode config content: %v", err)
+		return nil, fmt.Errorf("cannot decode config file content: %v", err)
 	}
 
 	match, err := regexp.MatchString("^[a-z][a-z0-9-]*$", conf.ID)
 	if err != nil {
-		return nil, fmt.Errorf("cannot check config ID field: %v", err)
+		return nil, fmt.Errorf("cannot validate config \"id\" field: %v", err)
 	}
 
 	if !match {
-		return nil, fmt.Errorf("id in config must start with a letter and contain only lowercase letters, numbers, or a dash '-'")
+		return nil, fmt.Errorf("\"id\" field in config must start with a letter and contain only lowercase letters, numbers, or a dash '-'")
 	}
 
 	return &conf, nil
