@@ -21,367 +21,314 @@ type mockServer struct {
 	c net.Conn
 }
 
-func TestParsingInstallPkgsMessage(t *testing.T) {
-	cleanup()
+//func TestParsingInstallPkgsMessage(t *testing.T) {
+//	cleanup()
+//
+//	pkgString, pkgNames := longPackages()
+//
+//	tests := []struct {
+//		json     string
+//		expected msg.Message
+//	}{
+//		{
+//			json: `
+//			{
+//				"type": "message",
+//				"data": {
+//					"type": "InstallPackages",
+//					"payload": {
+//						"packages": [` + pkgString + `]
+//					}
+//				}
+//			}
+//			`,
+//			expected: msg.Message{
+//				Type: "message",
+//				Data: msg.MessagePayload{
+//					Type: msg.InMessageInstallPkgs,
+//					Payload: msg.MessagePayloadInstallPkgs{
+//						Packages: pkgNames,
+//					},
+//				},
+//			},
+//		},
+//	}
+//
+//	server, rconn := createRunnerConn(t)
+//
+//	packages := make(chan msg.Message)
+//	rconn.Subscribe(msg.InMessageInstallPkgs, packages)
+//
+//	server.write(t, []string{tests[0].json})
+//
+//	select {
+//	case p := <-packages:
+//		testInstallPkgsMessage(t, p, tests[0].expected)
+//	case err := <-rconn.Err:
+//		// Ignore socket EOF error.
+//		if _, ok := err.(*ReadEOF); !ok {
+//			t.Fatal(err)
+//		}
+//	}
+//}
 
-	pkgString, pkgNames := longPackages()
-
-	tests := []struct {
-		json     string
-		expected msg.Message
-	}{
-		{
-			json: `
-			{
-				"type": "message",
-				"data": {
-					"type": "InstallPackages",
-					"payload": {
-						"packages": [` + pkgString + `]
-					}
-				}
-			}
-			`,
-			expected: msg.Message{
-				Type: "message",
-				Data: msg.MessagePayload{
-					Type: msg.InMessageInstallPkgs,
-					Payload: msg.MessagePayloadInstallPkgs{
-						Packages: pkgNames,
-					},
-				},
-			},
-		},
-	}
-
-	server, rconn := createRunnerConn(t)
-
-	packages := make(chan msg.Message)
-	rconn.Subscribe(msg.InMessageInstallPkgs, packages)
-
-	server.write(t, []string{tests[0].json})
-
-	select {
-	case p := <-packages:
-		testInstallPkgsMessage(t, p, tests[0].expected)
-	case err := <-rconn.Err:
-		// Ignore socket EOF error.
-		if _, ok := err.(*ReadEOF); !ok {
-			t.Fatal(err)
-		}
-	}
-}
-
-func TestParsingCodeCellsMessage(t *testing.T) {
-	cleanup()
-
-	// Create a long string to test whether we can handle arbitrary long messages.
-	ccCode := longCodeCellCode()
-
-	tests := []struct {
-		json     string
-		expected msg.Message
-	}{
-		{
-			json: `
-			{
-				"type": "message",
-				"data": {
-					"type": "CodeCells",
-					"payload": {
-						"codeCells": [
-							{
-								"name": "cc1",
-								"code": "` + ccCode + `"` +
-				`},
-							{
-								"name": "cc2",
-								"code": "` + ccCode + `"` +
-				`}
-						]
-					}
-				}
-			}
-			`,
-			expected: msg.Message{
-				Type: "message",
-				Data: msg.MessagePayload{
-					Type: msg.InMessageCodeCells,
-					Payload: msg.MessagePayloadCodeCells{
-						CodeCells: []template.CodeCell{
-							{
-								Name: "cc1",
-								Code: ccCode,
-							},
-							{
-								Name: "cc2",
-								Code: ccCode,
-							},
-						},
-					},
-				},
-			},
-		},
-	}
-
-	server, rconn := createRunnerConn(t)
-
-	codeCells := make(chan msg.Message)
-	rconn.Subscribe(msg.InMessageCodeCells, codeCells)
-
-	server.write(t, []string{tests[0].json})
-
-	select {
-	case cc := <-codeCells:
-		testCodeCellsMessage(t, cc, tests[0].expected)
-	case err := <-rconn.Err:
-		// Ignore socket EOF error.
-		if _, ok := err.(*ReadEOF); !ok {
-			t.Fatal(err)
-		}
-	}
-}
-
-func TestParsingCommandMessage(t *testing.T) {
-	cleanup()
-
-	// Create a long string to test whether we can handle arbitrary long messages.
-	commandStr := longCommand()
-
-	tests := []struct {
-		json     string
-		expected msg.Message
-	}{
-		{
-			json: `
-				{
-					"type": "message",
-					"data": {
-						"type": "Command",
-						"payload": {
-							"command": "` + commandStr + `"` +
-				`}
-					}
-				}
-			`,
-			expected: msg.Message{
-				Type: "message",
-				Data: msg.MessagePayload{
-					Type: msg.InMessageCommand,
-					Payload: msg.MessagePayloadCommand{
-						Command: commandStr,
-					},
-				},
-			},
-		},
-	}
-
-	server, rconn := createRunnerConn(t)
-
-	commands := make(chan msg.Message)
-	rconn.Subscribe(msg.InMessageCommand, commands)
-
-	server.write(t, []string{tests[0].json})
-
-	select {
-	case cmd := <-commands:
-		testCommandMessage(t, cmd, tests[0].expected)
-	case err := <-rconn.Err:
-		// Ignore socket EOF error.
-		if _, ok := err.(*ReadEOF); !ok {
-			t.Fatal(err)
-		}
-	}
-}
+//func TestParsingCodeCellsMessage(t *testing.T) {
+//	cleanup()
+// // Create a long string to test whether we can handle arbitrary long messages.
+//	ccCode := longCodeCellCode()
+//
+//	tests := []struct {
+//		json     string
+//		expected msg.Message
+//	}{
+//		{
+//			json: `
+//			{
+//				"type": "message",
+//				"data": {
+//					"type": "CodeCells",
+//					"payload": {
+//						"codeCells": [
+//							{
+//								"name": "cc1",
+//								"code": "` + ccCode + `"` +
+//				`},
+//							{
+//								"name": "cc2",
+//								"code": "` + ccCode + `"` +
+//				`}
+//						]
+//					}
+//				}
+//			}
+//			`,
+//			expected: msg.Message{
+//				Type: "message",
+//				Data: msg.MessagePayload{
+//					Type: msg.InMessageCodeCells,
+//					Payload: msg.MessagePayloadCodeCells{
+//						CodeCells: []template.CodeCell{
+//							{
+//								Name: "cc1",
+//								Code: ccCode,
+//							},
+//							{
+//								Name: "cc2",
+//								Code: ccCode,
+//							},
+//						},
+//					},
+//				},
+//			},
+//		},
+//	}
+//
+//	server, rconn := createRunnerConn(t)
+//
+//	codeCells := make(chan msg.Message)
+//	rconn.Subscribe(msg.InMessageCodeCells, codeCells)
+//
+//	server.write(t, []string{tests[0].json})
+//
+//	select {
+//	case cc := <-codeCells:
+//		testCodeCellsMessage(t, cc, tests[0].expected)
+//	case err := <-rconn.Err:
+//		// Ignore socket EOF error.
+//		if _, ok := err.(*ReadEOF); !ok {
+//			t.Fatal(err)
+//		}
+//	}
+//}
 
 // Test whether we are able to correctly parse multiple JSON objects in a single byte stream.
-func TestParsingMultipleMessages(t *testing.T) {
-	// Try to cleanup from a previous run.
-	cleanup()
-
-	ccCode := longCodeCellCode()
-	ccMsgs := []string{
-		`
-			{
-				"type": "message",
-				"data": {
-					"type": "CodeCells",
-					"payload": {
-						"codeCells": [
-							{
-								"name": "cc1",
-								"code": "` + ccCode + `"` +
-			`},
-							{
-								"name": "cc2",
-								"code": "` + ccCode + `"` +
-			`}
-						]
-					}
-				}
-			}
-`,
-		`
-			{
-				"type": "message",
-				"data": {
-					"type": "CodeCells",
-					"payload": {
-						"codeCells": [
-							{
-								"name": "cc1",
-								"code": "` + ccCode + `"` +
-			`},
-							{
-								"name": "cc2",
-								"code": "` + ccCode + `"` +
-			`}
-						]
-					}
-				}
-			}
-`,
-	}
-
-	commandStr := longCommand()
-	cmdMsgs := []string{
-		`
-				{
-					"type": "message",
-					"data": {
-						"type": "Command",
-						"payload": {
-							"command": "` + commandStr + `"` +
-			`}
-					}
-				}
-`,
-		`
-				{
-					"type": "message",
-					"data": {
-						"type": "Command",
-						"payload": {
-							"command": "` + commandStr + `"` +
-			`}
-					}
-				}
-`,
-		`
-				{
-					"type": "message",
-					"data": {
-						"type": "Command",
-						"payload": {
-							"command": "` + commandStr + `"` +
-			`}
-					}
-				}
-`,
-		`
-				{
-					"type": "message",
-					"data": {
-						"type": "Command",
-						"payload": {
-							"command": "` + commandStr + `"` +
-			`}
-					}
-				}
-`,
-		`
-				{
-					"type": "message",
-					"data": {
-						"type": "Command",
-						"payload": {
-							"command": "` + commandStr + `"` +
-			`}
-					}
-				}
-`,
-	}
-
-	pkgString, _ := longPackages()
-	installPkgsMsgs := []string{
-		`
-			{
-				"type": "message",
-				"data": {
-					"type": "InstallPackages",
-					"payload": {
-						"packages": [` + pkgString + `]
-					}
-				}
-			}
-		`,
-		`
-			{
-				"type": "message",
-				"data": {
-					"type": "InstallPackages",
-					"payload": {
-						"packages": [` + pkgString + `]
-					}
-				}
-			}
-		`,
-		`
-			{
-				"type": "message",
-				"data": {
-					"type": "InstallPackages",
-					"payload": {
-						"packages": [` + pkgString + `]
-					}
-				}
-			}
-		`,
-	}
-
-	server, rconn := createRunnerConn(t)
-
-	codeCells := make(chan msg.Message)
-	rconn.Subscribe(msg.InMessageCodeCells, codeCells)
-
-	commands := make(chan msg.Message)
-	rconn.Subscribe(msg.InMessageCommand, commands)
-
-	packages := make(chan msg.Message)
-	rconn.Subscribe(msg.InMessageInstallPkgs, packages)
-
-	all := append(ccMsgs, cmdMsgs...)
-	all = append(all, installPkgsMsgs...)
-	server.write(t, all)
-
-	ccCount := 0
-	cmdCount := 0
-	pkgCount := 0
-	for {
-		select {
-		case <-codeCells:
-			ccCount += 1
-			t.Log("Received CodeCellMessage")
-		case <-commands:
-			cmdCount += 1
-			t.Log("Received CommandMessage")
-		case <-packages:
-			pkgCount += 1
-			t.Log("Received InstallPackageMessage")
-		case err := <-rconn.Err:
-			// Ignore socket EOF error.
-			if _, ok := err.(*ReadEOF); !ok {
-				t.Fatal(err)
-			}
-		}
-
-		if ccCount == len(ccMsgs) &&
-			cmdCount == len(cmdMsgs) &&
-			pkgCount == len(installPkgsMsgs) {
-			break
-		}
-	}
-}
+//func TestParsingMultipleMessages(t *testing.T) {
+//	// Try to cleanup from a previous run.
+//	cleanup()
+//
+//	ccCode := longCodeCellCode()
+//	ccMsgs := []string{
+//		`
+//			{
+//				"type": "message",
+//				"data": {
+//					"type": "CodeCells",
+//					"payload": {
+//						"codeCells": [
+//							{
+//								"name": "cc1",
+//								"code": "` + ccCode + `"` +
+//			`},
+//							{
+//								"name": "cc2",
+//								"code": "` + ccCode + `"` +
+//			`}
+//						]
+//					}
+//				}
+//			}
+//`,
+//		`
+//			{
+//				"type": "message",
+//				"data": {
+//					"type": "CodeCells",
+//					"payload": {
+//						"codeCells": [
+//							{
+//								"name": "cc1",
+//								"code": "` + ccCode + `"` +
+//			`},
+//							{
+//								"name": "cc2",
+//								"code": "` + ccCode + `"` +
+//			`}
+//						]
+//					}
+//				}
+//			}
+//`,
+//	}
+//
+//	commandStr := longCommand()
+//	cmdMsgs := []string{
+//		`
+//				{
+//					"type": "message",
+//					"data": {
+//						"type": "Command",
+//						"payload": {
+//							"command": "` + commandStr + `"` +
+//			`}
+//					}
+//				}
+//`,
+//		`
+//				{
+//					"type": "message",
+//					"data": {
+//						"type": "Command",
+//						"payload": {
+//							"command": "` + commandStr + `"` +
+//			`}
+//					}
+//				}
+//`,
+//		`
+//				{
+//					"type": "message",
+//					"data": {
+//						"type": "Command",
+//						"payload": {
+//							"command": "` + commandStr + `"` +
+//			`}
+//					}
+//				}
+//`,
+//		`
+//				{
+//					"type": "message",
+//					"data": {
+//						"type": "Command",
+//						"payload": {
+//							"command": "` + commandStr + `"` +
+//			`}
+//					}
+//				}
+//`,
+//		`
+//				{
+//					"type": "message",
+//					"data": {
+//						"type": "Command",
+//						"payload": {
+//							"command": "` + commandStr + `"` +
+//			`}
+//					}
+//				}
+//`,
+//	}
+//
+//	pkgString, _ := longPackages()
+//	installPkgsMsgs := []string{
+//		`
+//			{
+//				"type": "message",
+//				"data": {
+//					"type": "InstallPackages",
+//					"payload": {
+//						"packages": [` + pkgString + `]
+//					}
+//				}
+//			}
+//		`,
+//		`
+//			{
+//				"type": "message",
+//				"data": {
+//					"type": "InstallPackages",
+//					"payload": {
+//						"packages": [` + pkgString + `]
+//					}
+//				}
+//			}
+//		`,
+//		`
+//			{
+//				"type": "message",
+//				"data": {
+//					"type": "InstallPackages",
+//					"payload": {
+//						"packages": [` + pkgString + `]
+//					}
+//				}
+//			}
+//		`,
+//	}
+//
+//	server, rconn := createRunnerConn(t)
+//
+//	codeCells := make(chan msg.Message)
+//	rconn.Subscribe(msg.InMessageCodeCells, codeCells)
+//
+//	commands := make(chan msg.Message)
+//	rconn.Subscribe(msg.InMessageCommand, commands)
+//
+//	packages := make(chan msg.Message)
+//	rconn.Subscribe(msg.InMessageInstallPkgs, packages)
+//
+//	all := append(ccMsgs, cmdMsgs...)
+//	all = append(all, installPkgsMsgs...)
+//	server.write(t, all)
+//
+//	ccCount := 0
+//	cmdCount := 0
+//	pkgCount := 0
+//	for {
+//		select {
+//		case <-codeCells:
+//			ccCount += 1
+//			t.Log("Received CodeCellMessage")
+//		case <-commands:
+//			cmdCount += 1
+//			t.Log("Received CommandMessage")
+//		case <-packages:
+//			pkgCount += 1
+//			t.Log("Received InstallPackageMessage")
+//		case err := <-rconn.Err:
+//			// Ignore socket EOF error.
+//			if _, ok := err.(*ReadEOF); !ok {
+//				t.Fatal(err)
+//			}
+//		}
+//
+//		if ccCount == len(ccMsgs) &&
+//			cmdCount == len(cmdMsgs) &&
+//			pkgCount == len(installPkgsMsgs) {
+//			break
+//		}
+//	}
+//}
 
 func testInstallPkgsMessage(t *testing.T, parsed, expected msg.Message) {
 	testBaseMessage(t, parsed, expected)

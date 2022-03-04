@@ -1,9 +1,7 @@
 package template
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
@@ -128,23 +126,6 @@ func (t *Template) Stop() {
 	t.markDone(err)
 }
 
-// `UpdateCodeCells` writes code cells inside `template.CodeCellsDir`.
-func (t *Template) UpdateCodeCells(ccs []CodeCell) error {
-	for _, cc := range ccs {
-		p := t.CodeCellsDir + "/" + cc.Name
-		if err := os.WriteFile(p, []byte(cc.Code), 0644); err != nil {
-			return fmt.Errorf(
-				"failed to os.WriteFile:\ncodeCell=%s\npath=%s\ncontent=%s\nerr=%s",
-				cc.Name,
-				p,
-				cc.Code,
-				err,
-			)
-		}
-	}
-	return nil
-}
-
 // `RunningCommands` returns a slice of all running commands.
 func (t *Template) RunningCommands() []*Command {
 	return t.runningCmds.getAll()
@@ -181,25 +162,6 @@ func (t *Template) ExecCommand(executionID, command string, stdout, stderr chan<
 	t.runningCmds.remove(executionID)
 }
 
-func (t *Template) InstallPackages(pkgs []string) ([]byte, error) {
-	err, installed := t.installedPackages()
-	if err != nil {
-		return nil, err
-	}
-
-	// Filter out packages that are already installed.
-	diff := t.diff(installed, pkgs)
-
-	if len(diff) > 0 {
-		args := append([]string{"install"}, diff...)
-		cmd := exec.Command("npm", args...)
-		cmd.Dir = t.RootDir
-		return cmd.CombinedOutput()
-	}
-
-	return nil, nil
-}
-
 // `diff` returns a difference of two string arrays: diff = a - b.
 func (t *Template) diff(a, b []string) []string {
 	m := make(map[string]struct{})
@@ -215,36 +177,4 @@ func (t *Template) diff(a, b []string) []string {
 	}
 
 	return diff
-}
-
-// `installedPackages` reads currently installed packages based on the field "dependencies"
-// in the "package.json".
-func (t *Template) installedPackages() (error, []string) {
-	// We only have NPM based templates right now so we can just read template's "package.json".
-	var pkgJSON struct {
-		Deps map[string]string `json:"dependencies"`
-	}
-
-	p := t.RootDir + "/" + "package.json"
-	f, err := os.Open(p)
-	if err != nil {
-		return err, nil
-	}
-	defer f.Close()
-
-	b, err := ioutil.ReadAll(f)
-	if err != nil {
-		return err, nil
-	}
-
-	if err := json.Unmarshal(b, &pkgJSON); err != nil {
-		return err, nil
-	}
-
-	pkgs := make([]string, 0, len(pkgJSON.Deps))
-	for k := range pkgJSON.Deps {
-		pkgs = append(pkgs, k)
-	}
-
-	return nil, pkgs
 }

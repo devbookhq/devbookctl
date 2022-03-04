@@ -15,8 +15,6 @@ var (
 	rconn runner.Connection
 	templ *template.Template
 
-	codecells       = make(chan msg.Message)
-	packages        = make(chan msg.Message)
 	createDir       = make(chan msg.Message)
 	getFile         = make(chan msg.Message)
 	writeFile       = make(chan msg.Message)
@@ -207,35 +205,7 @@ func watchRunnerMessages() {
 				},
 			}
 			rconn.Send(msgPayload)
-		case cells := <-codecells:
-			log.Log(
-				msg.WithMessageData(cells.Data),
-			).Info("Received `CodeCells`")
-			d := cells.Data.Payload.(msg.MessagePayloadCodeCells)
-
-			if err := templ.UpdateCodeCells(d.CodeCells); err != nil {
-				log.Log(
-					log.WithError(err),
-				).Error("Failed to update code cells")
-			}
 			// TODO: We should send ack message back to Runner.
-		case pkg := <-packages:
-			log.Log(
-				msg.WithMessageData(pkg.Data),
-			).Info("Received `InstallPkgs`")
-
-			d := pkg.Data.Payload.(msg.MessagePayloadInstallPkgs)
-
-			out, err := templ.InstallPackages(d.Packages)
-			if err != nil {
-				log.Log(
-					log.WithError(err),
-					log.WithFields(log.Fields{
-						"packages": d.Packages,
-						"output":   string(out),
-					}),
-				).Error("Failed to install packages")
-			}
 			// TODO: We should send ack message back to Runner.
 		}
 	}
@@ -330,8 +300,6 @@ func main() {
 	defer rconn.Close()
 
 	// Subscribe to messages from runner.
-	rconn.Subscribe(msg.InMessageCodeCells, codecells)
-	rconn.Subscribe(msg.InMessageInstallPkgs, packages)
 	rconn.Subscribe(msg.InMessageCreateDir, createDir)
 	rconn.Subscribe(msg.InMessageWriteFile, writeFile)
 	rconn.Subscribe(msg.InMessageRemoveFile, removeFile)

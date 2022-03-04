@@ -14,10 +14,6 @@ type IPCEvent string
 const (
 	// In Messages
 	// Incoming messages from the unix socket.
-	InMessageCommand     MessageType = "Command"
-	InMessageCodeCells   MessageType = "CodeCells"
-	InMessageInstallPkgs MessageType = "InstallPackages"
-
 	InMessageCreateDir  MessageType = "CreateDirectory"
 	InMessageWriteFile  MessageType = "WriteFile"
 	InMessageGetFile    MessageType = "GetFile"
@@ -27,8 +23,6 @@ const (
 	InMessageExecCmd         MessageType = "ExecCmd"
 	InMessageKillCmd         MessageType = "KillCmd"
 	InMessageListRunningCmds MessageType = "ListRunningCmds"
-
-	InMessageRunCode MessageType = "RunCode"
 	//////////////////////////////////////////
 
 	// Out Messages
@@ -82,18 +76,6 @@ type Message struct {
 type MessagePayload struct {
 	Type    MessageType `json:"type"`
 	Payload interface{} `json:"payload"`
-}
-
-type MessagePayloadCommand struct {
-	Command string `json:"command"`
-}
-
-type MessagePayloadCodeCells struct {
-	CodeCells []template.CodeCell `json:"codeCells"`
-}
-
-type MessagePayloadInstallPkgs struct {
-	Packages []string `json:"packages"`
 }
 
 type MessagePayloadStatus struct {
@@ -172,13 +154,6 @@ type MessagePayloadRunningCmds struct {
 	Cmds   []*template.Command `json:"commands"`
 }
 
-type MessagePayloadRunCode struct {
-	ExecutionID string `json:"executionID"`
-	Code        string `json:"code"`
-	Filename    string `json:"filename"`
-	Command     string `json:"command"`
-}
-
 func (m *Message) UnmarshalJSON(bs []byte) error {
 	// Check if marshalled struct's `Type` is one of the consts.
 	// Return error if not.
@@ -189,24 +164,6 @@ func (m *Message) UnmarshalJSON(bs []byte) error {
 
 	// Here we unmarshall the message's payload field based on the message type.
 	switch msg.Data.Type {
-	case InMessageCommand:
-		var d MessagePayloadCommand
-		if err := json.Unmarshal(msg.Data.Payload, &d); err != nil {
-			return fmt.Errorf("Failed to unmarshal `InMessageCommand`: %s", err)
-		}
-		m.Data.Payload = d
-	case InMessageCodeCells:
-		var d MessagePayloadCodeCells
-		if err := json.Unmarshal(msg.Data.Payload, &d); err != nil {
-			return fmt.Errorf("Failed to unmarshal `InMessageCodeCells`: %s", err)
-		}
-		m.Data.Payload = d
-	case InMessageInstallPkgs:
-		var d MessagePayloadInstallPkgs
-		if err := json.Unmarshal(msg.Data.Payload, &d); err != nil {
-			return fmt.Errorf("Failed to unmarshal `InMessageInstallPkgs`: %s", err)
-		}
-		m.Data.Payload = d
 	case InMessageCreateDir:
 		var d MessagePayloadCreateDir
 		if err := json.Unmarshal(msg.Data.Payload, &d); err != nil {
@@ -255,11 +212,6 @@ func (m *Message) UnmarshalJSON(bs []byte) error {
 			return fmt.Errorf("Failed to unmarshal `InMessageListRunningCmds`: %s", err)
 		}
 		m.Data.Payload = d
-	case InMessageRunCode:
-		var d MessagePayloadRunCode
-		if err := json.Unmarshal(msg.Data.Payload, &d); err != nil {
-			return fmt.Errorf("Failed to unmarshal `InMessageRunCode`: %s", err)
-		}
 	default:
 		return fmt.Errorf(
 			"Unexpected `Message.Data.Type`. value=%s, msg=%s",
