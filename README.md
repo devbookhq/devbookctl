@@ -56,7 +56,7 @@ The [TOML](https://toml.io/en/) configuration file. The minimal configuration fi
 
 ```toml
 # Required. Unique ID for your Devbook VM. It must contain only lowercase letters, numbers or dash "-" and it must start with a letter.
-id = "example-env"
+id = "example-vm-id"
 
 # Optional. A command that will get executed when the VM boots up.
 # You can put your custom scripts here, for example.
@@ -76,12 +76,12 @@ Pass the environment's `id` value from the `dbk.toml` config as the `env` parame
 ```tsx
 import { useDevbook } from '@devbookhq/sdk'
 
-const { runCmd, stdout, stderr } = useDevbook({ env: 'example-env' })
+const { runCmd, stdout, stderr } = useDevbook({ env: 'your-vm-id', config: { domain: 'shared.usedevbook.com' } })
 ```
 
 ### JavaScript/TypeScript
 ```ts
 import { Devbook } from '@devbookhq/sdk'
 
-const dbk = new Devbook({ env: 'example-env' })
+const devbook = new Devbook({ env: 'your-vm-id', config: { domain: 'shared.usedevbook.com' } })
 ```
