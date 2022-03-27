@@ -17,7 +17,7 @@ const (
 	registryServer = "us-central1-docker.pkg.dev"
 	registryPath   = registryServer + "/devbookhq/devbook-runner-templates"
 	baseImageName  = "base"
-	baseImagePath  = registryPath + "/" + baseImageName
+	baseImagePath  = registryPath + "/" + baseImageName + ":latest"
 	baseImageAlias = "devbook"
 )
 
